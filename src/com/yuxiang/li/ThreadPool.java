@@ -85,8 +85,10 @@ public class ThreadPool {
     public volatile boolean isWorking = true;
 
     //关闭线程池
+    //注意 如果队列里还有任务要执行完，关闭的时候从队列里取任务的时候不要用阻塞的方法
     public void shutdown() {
         this.isWorking = false;
+        //判断每个线程的状态
         for (Thread thread : workers) {
             if (thread.getState().equals(Thread.State.BLOCKED) || thread.getState().equals(Thread.State.WAITING)) {
                 thread.interrupt();
