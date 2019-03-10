@@ -75,7 +75,7 @@ public class ThreadPool {
     public void execute(Runnable task) {
         //此处比较简单,jdk是先去判断当前线程数是否小于corepoolSize 如果小于的话 直接去创建一个新的线程去执行，
         // 如果大于等于的话就放到队列里去:1.如果放进去的线程是非运行状态的话，移除并拒绝，2.如果当前的线程数是0的话 就创建一个线程去跑，
-        //如果放不进去 则拒绝策略
+        //如果放不进去(如果当前线程数》=最大线程数) 则拒绝策略
         try {
             if (this.isWorking) {
                 this.blockingQueue.put(task);
