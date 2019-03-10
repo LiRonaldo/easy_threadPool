@@ -57,7 +57,7 @@ public class ThreadPool {
             Worker worker = new Worker(this);
             //准备就绪
             worker.start();
-            //添加进线程集合
+            //添加进线程集合 此处为了省事直接让核心线程全部启动，jdk中不是这样的 jdk是当提交任务的时候才会启动一个线程，并且是当前的工作线程要小雨corepoolsize才会去创建一个新的线程，病启动，加入线程的集合
             workers.add(worker);
         }
     }
@@ -73,6 +73,9 @@ public class ThreadPool {
 
     //放香菜阻塞方法
     public void execute(Runnable task) {
+        //此处比较简单,jdk是先去判断当前线程数是否小于corepoolSize 如果小于的话 直接去创建一个新的线程去执行，
+        // 如果大于等于的话就放到队列里去:1.如果放进去的线程是非运行状态的话，移除并拒绝，2.如果当前的线程数是0的话 就创建一个线程去跑，
+        //如果放不进去 则拒绝策略
         try {
             if (this.isWorking) {
                 this.blockingQueue.put(task);
